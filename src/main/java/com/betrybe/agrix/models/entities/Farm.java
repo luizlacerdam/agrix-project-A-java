@@ -6,6 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * FarmRepository.
+ */
 @Entity
 @Table(name = "farm")
 public class Farm {
