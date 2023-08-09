@@ -2,11 +2,19 @@ package com.betrybe.agrix.models.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * Crop entity.
+ */
 @Entity
 @Table(name = "crop")
 public class Crop {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(name = "farm_id")
@@ -17,6 +25,9 @@ public class Crop {
   @Column(name = "planted_area")
   private Double plantedArea;
 
+  /**
+   * Crop entity constructor.
+   */
   public Crop(Long id, Long farmId, String name, Double plantedArea) {
     this.id = id;
     this.farmId = farmId;

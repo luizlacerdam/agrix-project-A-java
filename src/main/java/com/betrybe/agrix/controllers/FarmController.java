@@ -1,7 +1,7 @@
 package com.betrybe.agrix.controllers;
 
-import com.betrybe.agrix.controllers.dto.FarmDTO;
-import com.betrybe.agrix.controllers.dto.ResponseDTO;
+import com.betrybe.agrix.controllers.dto.FarmDto;
+import com.betrybe.agrix.controllers.dto.ResponseDto;
 import com.betrybe.agrix.models.entities.Farm;
 import com.betrybe.agrix.service.FarmService;
 import java.util.List;
@@ -36,61 +36,78 @@ public class FarmController {
     this.farmService = farmService;
   }
 
+  /**
+   * Cria nova farm.
+   */
   @PostMapping()
-  public ResponseEntity<ResponseDTO<Farm>> createFarm(@RequestBody FarmDTO farmDTO) {
-    Farm newFarm = farmService.insertFarm(farmDTO.toFarm());
-    ResponseDTO<Farm> responseDTO = new ResponseDTO<>("Fazenda criada com sucesso!", newFarm);
-    return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+  public ResponseEntity<ResponseDto<Farm>> createFarm(@RequestBody FarmDto farmDto) {
+    Farm newFarm = farmService.insertFarm(farmDto.toFarm());
+    ResponseDto<Farm> responseDto = new ResponseDto<>("Fazenda criada com sucesso!", newFarm);
+    return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
   }
 
+  /**
+   * Atualiza farm.
+   */
   @PutMapping("/{farmId}")
-  public ResponseEntity<ResponseDTO<Farm>> updateFarm(@PathVariable Long farmId, @RequestBody FarmDTO farmDTO) {
-    Optional<Farm> optionalFarm = farmService.updateFarm(farmId, farmDTO.toFarm());
+  public ResponseEntity<ResponseDto<Farm>> updateFarm(
+      @PathVariable Long farmId, @RequestBody FarmDto farmDto) {
+    Optional<Farm> optionalFarm = farmService.updateFarm(farmId, farmDto.toFarm());
 
     if (optionalFarm.isEmpty()) {
-      ResponseDTO<Farm> responseDTO = new ResponseDTO<>(
+      ResponseDto<Farm> responseDto = new ResponseDto<>(
           String.format("Não foi encontrado a fazenda de ID %d", farmId), null);
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 
-    ResponseDTO<Farm> responseDTO = new ResponseDTO<>(
+    ResponseDto<Farm> responseDto = new ResponseDto<>(
         "Fazenda atualizada com sucesso!", optionalFarm.get());
-    return ResponseEntity.ok(responseDTO);
+    return ResponseEntity.ok(responseDto);
   }
 
+  /**
+   * Deleta farm.
+   */
   @DeleteMapping("/{farmId}")
-  public ResponseEntity<ResponseDTO<Farm>> removeFarmById(@PathVariable Long farmId) {
+  public ResponseEntity<ResponseDto<Farm>> removeFarmById(@PathVariable Long farmId) {
     Optional<Farm> optionalFarm = farmService.removeFarmById(farmId);
 
     if (optionalFarm.isEmpty()) {
-      ResponseDTO<Farm> responseDTO = new ResponseDTO<>(
+      ResponseDto<Farm> responseDto = new ResponseDto<>(
           String.format("Não foi encontrado a fazenda de ID %d", farmId), null);
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 
-    ResponseDTO<Farm> responseDTO = new ResponseDTO<>("Fazenda removida com sucesso!", null);
-    return ResponseEntity.ok(responseDTO);
+    ResponseDto<Farm> responseDto = new ResponseDto<>("Fazenda removida com sucesso!", null);
+    return ResponseEntity.ok(responseDto);
   }
 
+  /**
+   * Encontra farm pelo id.
+   */
   @GetMapping("/{id}")
-  public ResponseEntity<ResponseDTO<Farm>> getFarmById(@PathVariable Long farmId) {
+  public ResponseEntity<ResponseDto<Farm>> getFarmById(@PathVariable Long farmId) {
     Optional<Farm> optionalFarm = farmService.getFarmById(farmId);
 
     if (optionalFarm.isEmpty()) {
-      ResponseDTO<Farm> responseDTO = new ResponseDTO<>(
+      ResponseDto<Farm> responseDto = new ResponseDto<>(
           String.format("Não foi encontrada a fazenda de ID %d", farmId), null);
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 
-    ResponseDTO<Farm> responseDTO = new ResponseDTO<>("Fazenda encontrado com sucesso!", optionalFarm.get());
-    return ResponseEntity.ok(responseDTO);
+    ResponseDto<Farm> responseDto = new ResponseDto<>(
+        "Fazenda encontrado com sucesso!", optionalFarm.get());
+    return ResponseEntity.ok(responseDto);
   }
 
+  /**
+   * Encontra todas farms.
+   */
   @GetMapping()
-  public List<FarmDTO> getAllFarms() {
+  public List<FarmDto> getAllFarms() {
     List<Farm> allFarms = farmService.getAllFarms();
     return allFarms.stream()
-        .map((farm) -> new FarmDTO(farm.getId(), farm.getName(), farm.getSize()))
+        .map((farm) -> new FarmDto(farm.getId(), farm.getName(), farm.getSize()))
         .collect(Collectors.toList());
   }
 
