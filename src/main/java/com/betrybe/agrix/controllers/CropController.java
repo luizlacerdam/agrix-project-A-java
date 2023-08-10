@@ -101,7 +101,8 @@ public class CropController {
   public List<CropDto> getAllCrops() {
     List<Crop> allCrops = cropService.getAllCrops();
     return allCrops.stream()
-        .map((crop) -> new CropDto(crop.getId(), crop.getName(), crop.getFarmId(), crop.getPlantedArea()))
+        .map((crop) -> new CropDto(
+            crop.getId(), crop.getName(), crop.getFarmId(), crop.getPlantedArea()))
         .collect(Collectors.toList());
   }
   
