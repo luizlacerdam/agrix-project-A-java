@@ -3,7 +3,9 @@ package com.betrybe.agrix.controllers;
 import com.betrybe.agrix.controllers.dto.CropDto;
 import com.betrybe.agrix.controllers.dto.ResponseDto;
 import com.betrybe.agrix.models.entities.Crop;
+import com.betrybe.agrix.models.entities.Farm;
 import com.betrybe.agrix.service.CropService;
+import com.betrybe.agrix.service.FarmService;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,20 +30,29 @@ public class CropController {
   
   private CropService cropService;
 
+  private FarmService farmService;
+
   /**
    * Crop controller constructor.
    */
   @Autowired
-  public CropController(CropService cropService) {
+  public CropController(CropService cropService, FarmService farmService) {
     this.cropService = cropService;
+    this.farmService = farmService;
   }
 
   /**
    * Cria nova crop.
    */
   @PostMapping("/farms/{farmId}/crops")
-  public ResponseEntity<Crop> createCrop(@RequestBody CropDto cropDto) {
-    Crop newCrop = cropService.insertCrop(cropDto.toCrop());
+  public ResponseEntity<?> createCrop(@PathVariable Long farmId, @RequestBody CropDto cropDto) {
+    Optional<Farm> optionalFarm = farmService.getFarmById(farmId);
+
+    if (optionalFarm.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fazenda não encontrada!");
+    }
+
+    Crop newCrop = cropService.insertCrop(cropDto.toCrop(farmId));
     return ResponseEntity.status(HttpStatus.CREATED).body(newCrop);
   }
 
