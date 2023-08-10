@@ -39,7 +39,7 @@ public class CropController {
   /**
    * Cria nova crop.
    */
-  @PostMapping()
+  @PostMapping("/farms/{farmId}/crops")
   public ResponseEntity<Crop> createCrop(@RequestBody CropDto cropDto) {
     Crop newCrop = cropService.insertCrop(cropDto.toCrop());
     return ResponseEntity.status(HttpStatus.CREATED).body(newCrop);
@@ -84,12 +84,12 @@ public class CropController {
   /**
    * Encontra crop pelo id.
    */
-  @GetMapping("/{id}")
+  @GetMapping("/crops/{id}")
   public ResponseEntity<?> getCropById(@PathVariable Long id) {
     Optional<Crop> optionalCrop = cropService.getCropById(id);
 
     if (optionalCrop.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fazenda não encontrada!");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plantação não encontrada!");
     }
     return ResponseEntity.ok(optionalCrop.get());
   }
@@ -97,7 +97,7 @@ public class CropController {
   /**
    * Encontra todas crops.
    */
-  @GetMapping()
+  @GetMapping("/crops")
   public List<CropDto> getAllCrops() {
     List<Crop> allCrops = cropService.getAllCrops();
     return allCrops.stream()
