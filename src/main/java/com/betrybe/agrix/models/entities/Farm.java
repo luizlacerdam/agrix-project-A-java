@@ -20,6 +20,10 @@ public class Farm {
 
   private Double size;
 
+  public Farm() {
+
+  }
+
   /**
    * Farm entity constructor.
    */

@@ -25,6 +25,10 @@ public class Crop {
   @Column(name = "planted_area")
   private Double plantedArea;
 
+  public Crop() {
+
+  }
+
   /**
    * Crop entity constructor.
    */

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * FarmController.
  */
 @RestController
-@RequestMapping("farms")
+@RequestMapping("/farms")
 public class FarmController {
   
   private FarmService farmService;
@@ -40,10 +40,9 @@ public class FarmController {
    * Cria nova farm.
    */
   @PostMapping()
-  public ResponseEntity<ResponseDto<Farm>> createFarm(@RequestBody FarmDto farmDto) {
+  public ResponseEntity<Farm> createFarm(@RequestBody FarmDto farmDto) {
     Farm newFarm = farmService.insertFarm(farmDto.toFarm());
-    ResponseDto<Farm> responseDto = new ResponseDto<>("Fazenda criada com sucesso!", newFarm);
-    return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(newFarm);
   }
 
   /**
@@ -86,18 +85,13 @@ public class FarmController {
    * Encontra farm pelo id.
    */
   @GetMapping("/{id}")
-  public ResponseEntity<ResponseDto<Farm>> getFarmById(@PathVariable Long farmId) {
-    Optional<Farm> optionalFarm = farmService.getFarmById(farmId);
+  public ResponseEntity<?> getFarmById(@PathVariable Long id) {
+    Optional<Farm> optionalFarm = farmService.getFarmById(id);
 
     if (optionalFarm.isEmpty()) {
-      ResponseDto<Farm> responseDto = new ResponseDto<>(
-          String.format("Não foi encontrada a fazenda de ID %d", farmId), null);
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fazenda não encontrada!");
     }
-
-    ResponseDto<Farm> responseDto = new ResponseDto<>(
-        "Fazenda encontrado com sucesso!", optionalFarm.get());
-    return ResponseEntity.ok(responseDto);
+    return ResponseEntity.ok(optionalFarm.get());
   }
 
   /**
