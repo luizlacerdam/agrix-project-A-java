@@ -9,6 +9,7 @@ import com.betrybe.agrix.service.FarmService;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.hibernate.mapping.Any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,28 @@ public class CropController {
   }
 
   /**
+   * Lista as plantações de uma fazenda.
+   */
+  @GetMapping("/farms/{farmId}/crops")
+  public ResponseEntity<?> getCropsByFarmId(@PathVariable Long farmId) {
+    Optional<Farm> optionalFarm = farmService.getFarmById(farmId);
+
+    if (optionalFarm.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fazenda não encontrada!");
+    }
+
+    List<Crop> allCrops = cropService.getAllCrops();
+    List listaStream = allCrops.stream()
+        .filter(crop -> crop.getFarmId().equals(farmId))
+        .map((crop) -> new CropDto(
+            crop.getId(), crop.getName(), crop.getFarmId(), crop.getPlantedArea()))
+        .collect(Collectors.toList());
+
+    return  ResponseEntity.ok(listaStream);
+
+  }
+
+  /**
    * Atualiza crop.
    */
   @PutMapping("/{cropId}")
@@ -93,7 +116,7 @@ public class CropController {
   }
 
   /**
-   * Encontra crop pelo id.
+   * Encontra crops pelo id.
    */
   @GetMapping("/crops/{id}")
   public ResponseEntity<?> getCropById(@PathVariable Long id) {
@@ -116,7 +139,5 @@ public class CropController {
             crop.getId(), crop.getName(), crop.getFarmId(), crop.getPlantedArea()))
         .collect(Collectors.toList());
   }
-  
-  
 
 }
